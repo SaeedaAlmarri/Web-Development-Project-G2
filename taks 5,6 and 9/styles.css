@@ -1,0 +1,101 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f9;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 900px;
+    background: white;
+    padding: 20px;
+    margin: 20px auto;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: #333;
+    font-size: 24px;
+}
+
+p {
+    color: #666;
+}
+
+#calendar {
+    margin-top: 20px;
+}
+
+.fc-daygrid-event {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    overflow: visible !important;
+    text-align: center;
+    font-size: 12px;
+    padding: 4px;
+}
+
+.fc-event-title {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    display: block !important;
+}
+
+.google-calendar-btn {
+    display: block;
+    margin-top: 5px;
+    background: #4285F4;
+    color: white;
+    text-decoration: none;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 12px;
+}
+
+.google-calendar-btn:hover {
+    background: #357ae8;
+}
+
+/* New styles for table and chart */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 40px;
+}
+
+th, td {
+    text-align: center;
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #ddd;
+}
+
+#barChart {
+    width: 80%;
+    max-width: 900px;
+    margin: 0 auto;
+    display: block;
+}
+
+#report {
+    margin-bottom: 20px;
+}
+
+#barChart {
+    margin-top: 20px;
+}
