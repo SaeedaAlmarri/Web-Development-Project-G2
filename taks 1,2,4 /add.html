@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mizān - Add Assessment</title>
+    <link rel="stylesheet" href="add.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Add New Assessment</h1>
+            <!-- <nav>
+                <a href="dashboard.html" class="back-link">← Back to Dashboard</a>
+            </nav> -->
+        </header>
+        
+        <form id="assessmentForm">
+            <div class="form-group">
+                <label for="course">Course:</label>
+                <select id="course" name="course" required>
+                    <option value="">Select a course</option>
+                    <option value="CS151">CS151 - Introduction to Programming</option>
+                    <option value="CS350">CS350 - Web Development</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="assessmentType">Assessment Type:</label>
+                <select id="assessmentType" name="assessmentType" required>
+                    <option value="">Select type</option>
+                    <option value="homework">Homework</option>
+                    <option value="quiz">Quiz</option>
+                    <option value="midterm">Midterm Exam</option>
+                    <option value="final">Final Exam</option>
+                    <option value="project">Project</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="dueDate">Due Date:</label>
+                <input type="datetime-local" id="dueDate" name="dueDate" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="effortHours">Estimated Effort (hours):</label>
+                <input type="number" id="effortHours" name="effortHours" min="1" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="weight">Weight (% of final grade):</label>
+                <input type="number" id="weight" name="weight" min="1" max="100" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Description (optional):</label>
+                <textarea id="description" name="description" rows="3"></textarea>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit">Add Assessment</button>
+                <button type="reset" class="secondary">Clear Form</button>
+            </div>
+        </form>
+        
+        <div id="formFeedback"></div>
+    </div>
+    <script src="add.js"></script>
+    
+</body>
+</html>
