@@ -3,25 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mizān - Add Assessment</title>
+    <title>Add Assessment</title>
     <link rel="stylesheet" href="add.css">
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>Add New Assessment</h1>
-            <!-- <nav>
-                <a href="dashboard.html" class="back-link">← Back to Dashboard</a>
-            </nav> -->
-        </header>
-        
+        <h1>Add New Assessment</h1>
+        <!-- <nav>
+            <a href="dashboard.html">Back to Dashboard</a>
+        </nav>
+         -->
         <form id="assessmentForm">
             <div class="form-group">
                 <label for="course">Course:</label>
                 <select id="course" name="course" required>
                     <option value="">Select a course</option>
-                    <option value="CS151">CS151 - Introduction to Programming</option>
-                    <option value="CS350">CS350 - Web Development</option>
+                    <!-- Will be populated by JavaScript -->
                 </select>
             </div>
             
@@ -29,11 +26,11 @@
                 <label for="assessmentType">Assessment Type:</label>
                 <select id="assessmentType" name="assessmentType" required>
                     <option value="">Select type</option>
-                    <option value="homework">Homework</option>
-                    <option value="quiz">Quiz</option>
-                    <option value="midterm">Midterm Exam</option>
-                    <option value="final">Final Exam</option>
-                    <option value="project">Project</option>
+                    <option value="Homework">Homework</option>
+                    <option value="Quiz">Quiz</option>
+                    <option value="Midterm">Midterm Exam</option>
+                    <option value="Final Exam">Final Exam</option>
+                    <option value="Project Phase">Project Phase</option>
                 </select>
             </div>
             
@@ -44,7 +41,7 @@
             
             <div class="form-group">
                 <label for="dueDate">Due Date:</label>
-                <input type="datetime-local" id="dueDate" name="dueDate" required>
+                <input type="date" id="dueDate" name="dueDate" required>
             </div>
             
             <div class="form-group">
@@ -57,11 +54,6 @@
                 <input type="number" id="weight" name="weight" min="1" max="100" required>
             </div>
             
-            <div class="form-group">
-                <label for="description">Description (optional):</label>
-                <textarea id="description" name="description" rows="3"></textarea>
-            </div>
-            
             <div class="form-actions">
                 <button type="submit">Add Assessment</button>
                 <button type="reset" class="secondary">Clear Form</button>
@@ -69,8 +61,10 @@
         </form>
         
         <div id="formFeedback"></div>
+        
+        <div id="assessmentsContainer" class="assessments-list"></div>
     </div>
-    <script src="add.js"></script>
     
+    <script src="add.js"></script>
 </body>
 </html>
