@@ -2,11 +2,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('loginForm');
     const errorMessage = document.getElementById('errorMessage');
 
-    // Check for existing session
     const currentUser = getCurrentUser();
-    if (currentUser) {
-        showDashboard(currentUser);
+    if (currentUser && !isSessionExpired(currentUser)) {
+        window.location.href = '../mainPage.html';
         return;
+    } else if (currentUser) {
+        localStorage.removeItem('currentUser');
     }
 
     loginForm.addEventListener('submit', async function(e) {
@@ -25,16 +26,16 @@ document.addEventListener('DOMContentLoaded', function() {
             );
 
             if (user) {
-                // PROPERLY save all user data
                 const userData = {
                     userId: user.user_id,
                     userType: user.user_type,
                     courses: user.courses || [],
-                    displayName: getDisplayName(user.user_type)
+                    displayName: getDisplayName(user.user_type),
+                    loginTime: new Date().getTime() 
                 };
                 localStorage.setItem('currentUser', JSON.stringify(userData));
                 
-                showDashboard(userData);
+                window.location.href = '../mainPage.html?fresh=' + Date.now();
             } else {
                 showError('Invalid User ID or password');
             }
@@ -44,32 +45,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    function showDashboard(user) {
-        document.querySelector('.login-container').style.display = 'none';
-        
-        const dashboard = document.createElement('div');
-        dashboard.className = 'dashboard';
-        dashboard.innerHTML = `
-            <h1>Welcome, ${user.displayName}</h1>
-            <div class="user-info">
-                <p><strong>User ID:</strong> ${user.userId}</p>
-                <p><strong>Role:</strong> ${user.userType.replace('_', ' ')}</p>
-                ${user.courses.length ? `
-                <h2>Your Courses:</h2>
-                <ul>
-                    ${user.courses.map(course => `<li>${course}</li>`).join('')}
-                </ul>
-                ` : ''}
-            </div>
-            <button id="logoutBtn" class="logout-btn">Logout</button>
-        `;
-        
-        document.body.appendChild(dashboard);
-        document.getElementById('logoutBtn').addEventListener('click', logout);
+    function isSessionExpired(user) {
+        const oneHour = 60 * 60 * 1000;
+        return (new Date().getTime() - user.loginTime) > oneHour;
+    }
+
+    function getCurrentUser() {
+        const userData = localStorage.getItem('currentUser');
+        return userData ? JSON.parse(userData) : null;
     }
 
     function getDisplayName(userType) {
-        // Map JSON user types to display names
         const names = {
             'student': 'Student',
             'course_instructor': 'Instructor',
@@ -78,18 +64,8 @@ document.addEventListener('DOMContentLoaded', function() {
         return names[userType] || 'User';
     }
 
-    function getCurrentUser() {
-        const userData = localStorage.getItem('currentUser');
-        return userData ? JSON.parse(userData) : null;
-    }
-
     function showError(message) {
         errorMessage.textContent = message;
         errorMessage.style.display = 'block';
-    }
-
-    function logout() {
-        localStorage.removeItem('currentUser');
-        location.reload();
     }
 });
