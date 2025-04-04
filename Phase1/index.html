@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mizān - Manage Assessments (JSON Sim)</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <style>
+      @font-face {
+        font-family: 'LucideIcons';
+        src: url(https://cdn.jsdelivr.net/npm/lucide-static@latest/font/Lucide.ttf) format('truetype');
+      }
+      .lucide {
+        font-family: 'LucideIcons';
+        font-size: 1.25rem; /* Adjust size as needed */
+        line-height: 1;
+        display: inline-block; /* Important for alignment */
+        vertical-align: middle; /* Align icons with text */
+      }
+      /* Basic styling for modals */
+      .modal {
+        display: none; /* Hidden by default */
+        position: fixed;
+        z-index: 50;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.5); /* Dim background */
+        align-items: center;
+        justify-content: center;
+      }
+      .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 2rem;
+        border: 1px solid #888;
+        width: 90%;
+        max-width: 500px;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+       .modal-close-btn {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        cursor: pointer;
+        font-size: 1.5rem;
+        color: #aaa;
+        transition: color 0.2s;
+      }
+      .modal-close-btn:hover {
+        color: #333;
+      }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+             borderRadius: {
+              'lg': '0.5rem',
+              'md': '0.375rem',
+              'sm': '0.25rem',
+              'xl': '0.75rem',
+              '2xl': '1rem',
+              '3xl': '1.5rem',
+              'full': '9999px',
+            },
+          }
+        }
+      }
+    </script>
+</head>
+<body class="bg-gray-100 font-sans p-6 md:p-10">
+
+    <div class="container mx-auto max-w-6xl bg-white p-6 md:p-8 rounded-xl shadow-md">
+
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6">Manage Assessments</h1>
+
+        <div class="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-700 mb-3">Filter Assessments</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label for="courseFilter" class="block text-sm font-medium text-gray-700 mb-1">Filter by Course:</label>
+                    <select id="courseFilter" name="courseFilter" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm">
+                        <option value="all">All My Courses</option>
+                        </select>
+                </div>
+                 <div>
+                    <label for="semesterFilter" class="block text-sm font-medium text-gray-700 mb-1">Semester:</label>
+                    <select id="semesterFilter" name="semesterFilter" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm">
+                        <option value="SP2025">Spring 2025</option>
+                        <option value="FA2024">Fall 2024</option>
+                         </select>
+                </div>
+                <div class="flex items-end">
+                     <button id="applyFilterBtn" class="w-full md:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out">
+                        Apply Filters
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg shadow-sm">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Effort (Hrs)</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Weight (%)</th>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="assessmentTableBody" class="bg-white divide-y divide-gray-200">
+                    </tbody>
+            </table>
+             <p id="noAssessmentsMessage" class="text-center text-gray-500 py-6 hidden">No assessments found for the selected criteria.</p>
+        </div>
+
+    </div>
+
+    <div id="updateModal" class="modal">
+        <div class="modal-content relative">
+             <span class="modal-close-btn" onclick="closeModal('updateModal')">&times;</span>
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Update Assessment</h2>
+            <form id="updateForm">
+                <input type="hidden" id="updateAssessmentId" name="id">
+
+                <div class="mb-4">
+                    <label for="updateCourse" class="block text-sm font-medium text-gray-700">Course Code</label>
+                    <input type="text" id="updateCourse" name="course" required readonly class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 bg-gray-100 focus:outline-none sm:text-sm" >
+                </div>
+                <div class="mb-4">
+                    <label for="updateTitle" class="block text-sm font-medium text-gray-700">Assessment Title</label>
+                    <input type="text" id="updateTitle" name="title" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="e.g., Midterm Exam">
+                </div>
+                <div class="mb-4">
+                    <label for="updateType" class="block text-sm font-medium text-gray-700">Type</label>
+                    <select id="updateType" name="type" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <option value="">Select Type</option>
+                        <option value="Homework">Homework</option> <option value="Midterm">Midterm</option> <option value="Project Phase">Project Phase</option> <option value="Quiz">Quiz</option>
+                        <option value="Assignment">Assignment</option>
+                        <option value="Project">Project</option>
+                        <option value="Exam">Exam</option>
+                        <option value="Presentation">Presentation</option>
+                        <option value="Lab Test">Lab Test</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="updateDueDate" class="block text-sm font-medium text-gray-700">Due Date</label>
+                    <input type="date" id="updateDueDate" name="due_date" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                </div>
+                 <div class="mb-4">
+                    <label for="updateEffortHours" class="block text-sm font-medium text-gray-700">Effort (Hours)</label>
+                    <input type="number" id="updateEffortHours" name="effort_hours" required min="0" step="1" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="e.g., 8">
+                </div>
+                <div class="mb-6">
+                    <label for="updateWeight" class="block text-sm font-medium text-gray-700">Weight (%)</label>
+                    <input type="number" id="updateWeight" name="weight" required min="0" max="100" step="1" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="e.g., 20">
+                </div>
+                <div class="flex justify-end space-x-3">
+                     <button type="button" onclick="closeModal('updateModal')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out">Cancel</button>
+                     <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="deleteModal" class="modal">
+        <div class="modal-content relative">
+             <span class="modal-close-btn" onclick="closeModal('deleteModal')">&times;</span>
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Confirm Deletion</h2>
+            <p class="text-gray-600 mb-6">Are you sure you want to delete the assessment "<span id="deleteAssessmentTitle" class="font-medium"></span>" from course <span id="deleteAssessmentCourse" class="font-medium"></span>? This action cannot be undone.</p>
+            <input type="hidden" id="deleteAssessmentId">
+            <div class="flex justify-end space-x-3">
+                <button type="button" onclick="closeModal('deleteModal')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out">Cancel</button>
+                <button type="button" id="confirmDeleteBtn" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="fixed bottom-5 right-5 bg-green-500 text-white py-2 px-4 rounded-md shadow-lg transition-opacity duration-300 opacity-0 z-50">
+        Notification message
+    </div>
+
+
+    <script>
+        // --- Simulated JSON Data Structure ---
+        let courseData = {
+            "CMPS310": {
+                "course_name": "Software Engineering",
+                "assessments": [
+                    {
+                        "title": "Homework 1",
+                        "type": "Homework",
+                        "due_date": "2025-04-05",
+                        "effort_hours": 5,
+                        "weight": 10
+                    },
+                    {
+                        "title": "Midterm 1",
+                        "type": "Midterm",
+                        "due_date": "2025-04-15",
+                        "effort_hours": 8,
+                        "weight": 25
+                    }
+                ]
+            },
+            "CMPS320": {
+                "course_name": "Database Systems",
+                "assessments": [
+                    {
+                        "title": "Project Phase 1",
+                        "type": "Project Phase",
+                        "due_date": "2025-04-10",
+                        "effort_hours": 12,
+                        "weight": 20
+                    }
+                ]
+            },
+             "MA205": {
+                "course_name": "Calculus II",
+                "assessments": [
+                    { "title": "Quiz 3", "type": "Quiz", "due_date": "2025-04-10", "effort_hours": 2, "weight": 5 },
+                    { "title": "Homework 5", "type": "Homework", "due_date": "2025-04-25", "effort_hours": 4, "weight": 5 }
+                ]
+            },
+            "EN100": {
+                 "course_name": "Academic Writing",
+                 "assessments": [
+                     { "title": "Essay Draft 1", "type": "Assignment", "due_date": "2025-04-22", "effort_hours": 6, "weight": 15 }
+                 ]
+            }
+        };
+
+        // --- Global variable to hold flattened data for easier access ---
+        let flattenedAssessments = [];
+
+        // --- DOM Elements ---
+        const tableBody = document.getElementById('assessmentTableBody');
+        const updateModal = document.getElementById('updateModal');
+        const deleteModal = document.getElementById('deleteModal');
+        const updateForm = document.getElementById('updateForm');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        const courseFilter = document.getElementById('courseFilter');
+        const applyFilterBtn = document.getElementById('applyFilterBtn');
+        const noAssessmentsMessage = document.getElementById('noAssessmentsMessage');
+        const notification = document.getElementById('notification');
+
+        // --- Functions ---
+
+        /**
+         * Flattens the nested courseData into a single array of assessments,
+         * adding a unique ID and course code to each.
+         * @param {object} data - The nested course data object.
+         * @returns {Array} - A flat array of assessment objects.
+         */
+        function flattenAndProcessData(data) {
+            const flatList = [];
+            for (const courseCode in data) {
+                if (data.hasOwnProperty(courseCode)) {
+                    const courseInfo = data[courseCode];
+                    courseInfo.assessments.forEach((assessment, index) => {
+                        flatList.push({
+                            ...assessment, // Spread assessment properties
+                            id: `${courseCode}-${index}`, // Generate unique ID (e.g., "CMPS310-0")
+                            courseCode: courseCode, // Add course code
+                            courseName: courseInfo.course_name // Add course name (optional, for display)
+                        });
+                    });
+                }
+            }
+            return flatList;
+        }
+
+
+        /**
+         * Renders the assessment list in the table.
+         * @param {Array} data - The flat array of assessment objects to display.
+         */
+        function renderTable(data) {
+            tableBody.innerHTML = ''; // Clear existing rows
+            if (data.length === 0) {
+                noAssessmentsMessage.classList.remove('hidden');
+                tableBody.classList.add('hidden');
+            } else {
+                 noAssessmentsMessage.classList.add('hidden');
+                 tableBody.classList.remove('hidden');
+                 data.forEach(assessment => {
+                    const row = document.createElement('tr');
+                    // Store the generated unique ID in the data-id attribute
+                    row.setAttribute('data-id', assessment.id);
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${assessment.courseCode}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${assessment.title}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${assessment.type}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${assessment.due_date}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${assessment.effort_hours}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${assessment.weight}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2">
+                            <button class="update-btn text-indigo-600 hover:text-indigo-900 transition duration-150 ease-in-out" title="Update">
+                                <span class="lucide">📝</span> </button>
+                            <button class="delete-btn text-red-600 hover:text-red-900 transition duration-150 ease-in-out" title="Delete">
+                                <span class="lucide">❌</span> </button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            }
+            // Add event listeners after rows are created
+            addTableButtonListeners();
+        }
+
+        /**
+         * Populates the course filter dropdown from the courseData keys.
+         */
+        function populateCourseFilter() {
+            // Clear existing options except the 'All' option
+            courseFilter.innerHTML = '<option value="all">All My Courses</option>';
+            for (const courseCode in courseData) {
+                 if (courseData.hasOwnProperty(courseCode)) {
+                    const option = document.createElement('option');
+                    option.value = courseCode;
+                    option.textContent = `${courseCode} - ${courseData[courseCode].course_name}`;
+                    courseFilter.appendChild(option);
+                 }
+            }
+        }
+
+
+        /**
+         * Opens a modal by its ID.
+         * @param {string} modalId - The ID of the modal element to open.
+         */
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'flex'; // Use flex to center content
+            }
+        }
+
+        /**
+         * Closes a modal by its ID.
+         * @param {string} modalId - The ID of the modal element to close.
+         */
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        /**
+         * Shows a temporary notification message.
+         * @param {string} message - The message to display.
+         * @param {boolean} isError - Optional. If true, shows an error style.
+         */
+        function showNotification(message, isError = false) {
+            notification.textContent = message;
+            notification.classList.remove('bg-green-500', 'bg-red-500', 'opacity-0');
+
+            if (isError) {
+                notification.classList.add('bg-red-500');
+            } else {
+                notification.classList.add('bg-green-500');
+            }
+            notification.classList.add('opacity-100');
+
+            setTimeout(() => {
+                notification.classList.remove('opacity-100');
+                notification.classList.add('opacity-0');
+            }, 3000);
+        }
+
+
+        /**
+         * Adds event listeners to the update and delete buttons in the table.
+         */
+        function addTableButtonListeners() {
+            document.querySelectorAll('.update-btn').forEach(button => {
+                button.addEventListener('click', handleUpdateClick);
+            });
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', handleDeleteClick);
+            });
+        }
+
+         /**
+         * Parses the unique ID (e.g., "CMPS310-1") into course code and index.
+         * @param {string} id - The unique ID string.
+         * @returns {object|null} - An object { courseCode, index } or null if invalid.
+         */
+        function parseAssessmentId(id) {
+            if (!id || !id.includes('-')) return null;
+            const parts = id.split('-');
+            const index = parseInt(parts.pop(), 10); // Get the last part as index
+            const courseCode = parts.join('-'); // Join remaining parts as course code
+            if (isNaN(index)) return null;
+            return { courseCode, index };
+        }
+
+        /**
+         * Handles the click event for the update button.
+         * Finds the assessment data and populates the update form.
+         * @param {Event} event - The click event object.
+         */
+        function handleUpdateClick(event) {
+            const row = event.target.closest('tr');
+            const assessmentId = row.getAttribute('data-id'); // e.g., "CMPS310-0"
+            const idParts = parseAssessmentId(assessmentId);
+
+            if (idParts && courseData[idParts.courseCode] && courseData[idParts.courseCode].assessments[idParts.index]) {
+                 const assessment = courseData[idParts.courseCode].assessments[idParts.index];
+                // Populate the update form
+                document.getElementById('updateAssessmentId').value = assessmentId; // Store the unique ID
+                document.getElementById('updateCourse').value = idParts.courseCode; // Set course code (read-only)
+                document.getElementById('updateTitle').value = assessment.title;
+                document.getElementById('updateType').value = assessment.type;
+                document.getElementById('updateDueDate').value = assessment.due_date;
+                document.getElementById('updateEffortHours').value = assessment.effort_hours;
+                document.getElementById('updateWeight').value = assessment.weight;
+                openModal('updateModal');
+            } else {
+                console.error("Assessment not found for ID:", assessmentId);
+                showNotification("Could not find assessment data.", true);
+            }
+        }
+
+        /**
+         * Handles the click event for the delete button.
+         * Shows the delete confirmation modal.
+         * @param {Event} event - The click event object.
+         */
+        function handleDeleteClick(event) {
+            const row = event.target.closest('tr');
+            const assessmentId = row.getAttribute('data-id');
+            const idParts = parseAssessmentId(assessmentId);
+
+            if (idParts && courseData[idParts.courseCode] && courseData[idParts.courseCode].assessments[idParts.index]) {
+                const assessment = courseData[idParts.courseCode].assessments[idParts.index];
+                // Set the title, course and ID in the delete modal
+                document.getElementById('deleteAssessmentTitle').textContent = assessment.title;
+                 document.getElementById('deleteAssessmentCourse').textContent = idParts.courseCode;
+                document.getElementById('deleteAssessmentId').value = assessmentId; // Store unique ID
+                openModal('deleteModal');
+            } else {
+                 console.error("Assessment not found for ID:", assessmentId);
+                 showNotification("Could not find assessment data.", true);
+            }
+        }
+
+        /**
+         * Handles the submission of the update form.
+         * Updates the *internal* courseData object and re-renders the table.
+         * @param {Event} event - The form submission event object.
+         */
+        function handleUpdateSubmit(event) {
+            event.preventDefault();
+            const formData = new FormData(updateForm);
+            const assessmentId = formData.get('id'); // The unique ID like "CMPS310-0"
+            const idParts = parseAssessmentId(assessmentId);
+
+            if (!idParts || !courseData[idParts.courseCode] || !courseData[idParts.courseCode].assessments[idParts.index]) {
+                 console.error("Failed to find assessment to update with ID:", assessmentId);
+                 showNotification('Error updating assessment. Assessment not found.', true);
+                 closeModal('updateModal');
+                 return;
+            }
+
+            // Update the assessment in the original nested structure
+            const assessmentToUpdate = courseData[idParts.courseCode].assessments[idParts.index];
+            assessmentToUpdate.title = formData.get('title');
+            assessmentToUpdate.type = formData.get('type');
+            assessmentToUpdate.due_date = formData.get('due_date');
+            assessmentToUpdate.effort_hours = parseInt(formData.get('effort_hours'), 10);
+            assessmentToUpdate.weight = parseInt(formData.get('weight'), 10);
+
+            // Re-process data and re-render
+            flattenedAssessments = flattenAndProcessData(courseData);
+            renderTable(getFilteredAssessments()); // Apply current filters
+            closeModal('updateModal');
+            showNotification('Assessment updated successfully!');
+        }
+
+        /**
+         * Handles the confirmation of the delete action.
+         * Removes the assessment from the *internal* courseData object and re-renders.
+         */
+        function handleDeleteConfirm() {
+            const assessmentId = document.getElementById('deleteAssessmentId').value;
+            const idParts = parseAssessmentId(assessmentId);
+
+            if (idParts && courseData[idParts.courseCode] && courseData[idParts.courseCode].assessments[idParts.index]) {
+                 // Remove the assessment using splice from the original nested array
+                 courseData[idParts.courseCode].assessments.splice(idParts.index, 1);
+
+                 // Re-process data and re-render
+                 flattenedAssessments = flattenAndProcessData(courseData);
+                 renderTable(getFilteredAssessments()); // Apply current filters
+                 closeModal('deleteModal');
+                 showNotification('Assessment deleted successfully!');
+            } else {
+                 console.error("Failed to find assessment to delete with ID:", assessmentId);
+                 showNotification('Error deleting assessment.', true);
+                 closeModal('deleteModal');
+            }
+        }
+
+        /**
+         * Filters the flattened assessments based on the selected course.
+         * @returns {Array} The filtered array of assessments.
+         */
+        function getFilteredAssessments() {
+            const selectedCourse = courseFilter.value;
+            if (selectedCourse === 'all') {
+                return flattenedAssessments; // Return all if 'All' is selected
+            } else {
+                return flattenedAssessments.filter(a => a.courseCode === selectedCourse);
+            }
+        }
+
+        /**
+         * Applies the filters and re-renders the table.
+         */
+        function applyFilters() {
+             renderTable(getFilteredAssessments());
+        }
+
+
+        // --- Event Listeners ---
+        updateForm.addEventListener('submit', handleUpdateSubmit);
+        confirmDeleteBtn.addEventListener('click', handleDeleteConfirm);
+        applyFilterBtn.addEventListener('click', applyFilters);
+
+        // Close modals if clicked outside the content area
+        window.addEventListener('click', (event) => {
+            if (event.target === updateModal) {
+                closeModal('updateModal');
+            }
+            if (event.target === deleteModal) {
+                closeModal('deleteModal');
+            }
+        });
+
+        // --- Initial Load ---
+        populateCourseFilter(); // Populate filter dropdown first
+        flattenedAssessments = flattenAndProcessData(courseData); // Process initial data
+        renderTable(flattenedAssessments); // Render the initial full list
+
+    </script>
+
+</body>
+</html>
