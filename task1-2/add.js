@@ -71,7 +71,6 @@ function populateCourseDropdown(userCourses) {
     }
 }
 
-/* ALL FUNCTIONS BELOW THIS POINT REMAIN EXACTLY THE SAME AS YOUR ORIGINAL CODE */
 function updateDefaultTitle() {
     const type = document.getElementById('assessmentType').value;
     const titleInput = document.getElementById('title');
@@ -220,33 +219,14 @@ function displayCourseAssessments(courseCode) {
             <p><strong>Due:</strong> ${formatDate(assessment.due_date)}</p>
             <p><strong>Weight:</strong> ${assessment.weight}%</p>
             <p><strong>Effort Hours:</strong> ${assessment.effort_hours}</p>
-            <button class="delete-btn" data-course="${courseCode}" data-id="${assessment.id}">Delete</button>
         `;
         container.appendChild(element);
-    });
-    
-    document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', handleDeleteAssessment);
     });
 }
 
 function formatDate(dateString) {
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
-}
-
-function handleDeleteAssessment(e) {
-    const courseCode = e.target.dataset.course;
-    const assessmentId = e.target.dataset.id;
-    
-    if (confirm('Are you sure you want to delete this assessment?')) {
-        assessmentsData[courseCode].assessments = assessmentsData[courseCode].assessments.filter(
-            a => a.id !== assessmentId
-        );
-        
-        showFeedback('Assessment deleted successfully', 'success');
-        displayCourseAssessments(courseCode);
-    }
 }
 
 function showFeedback(message, type) {
