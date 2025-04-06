@@ -35,11 +35,9 @@ function initializeUI(user) {
     document.getElementById('welcomeMessage').textContent = `Welcome, ${user.userId}`;
     document.getElementById('userRole').textContent = formatUserRole(user.userType);
 
-    // Create global buttons container
     const globalActions = document.createElement('div');
     globalActions.className = 'global-actions';
     
-    // Add Get All Assessments button (for all users)
     const allAssessBtn = document.createElement('button');
     allAssessBtn.className = 'btn get-all-assessments';
     allAssessBtn.innerHTML = '<i class="fas fa-file-alt"></i> Get All Assessments';
@@ -49,7 +47,6 @@ function initializeUI(user) {
     });
     globalActions.appendChild(allAssessBtn);
     
-    // Add View All Calendar button (only for students)
     if (user.userType === 'student') {
         const allCalendarBtn = document.createElement('button');
         allCalendarBtn.className = 'btn view-all-calendar';
@@ -61,7 +58,6 @@ function initializeUI(user) {
         globalActions.appendChild(allCalendarBtn);
     }
     
-    // Add Workload Reports button (only for coordinators)
     if (user.userType === 'coordinator') {
         const workloadBtn = document.createElement('button');
         workloadBtn.className = 'btn workload-report';
@@ -72,12 +68,10 @@ function initializeUI(user) {
         globalActions.appendChild(workloadBtn);
     }
     
-    // Insert global buttons before courses container
     const container = document.querySelector('.container');
     const coursesContainer = document.getElementById('coursesContainer');
     container.insertBefore(globalActions, coursesContainer);
 
-    // Rest of existing initializeUI code...
     document.getElementById('logoutBtn').addEventListener('click', function() {
         localStorage.removeItem('currentUser');
         redirectToLogin();
@@ -129,14 +123,7 @@ function generateCourseCardHTML(courseCode, userType) {
         `;
     }
 
-    // Keep View Assessments (Calendar) only for students in course cards
-    if (userType === 'student') {
-        buttons += `
-            <button class="btn view-assessments" data-course="${courseCode}">
-                <i class="fas fa-calendar"></i> Calendar
-            </button>
-        `;
-    }
+  
 
     if (userType === 'course_instructor') {
         buttons += `
