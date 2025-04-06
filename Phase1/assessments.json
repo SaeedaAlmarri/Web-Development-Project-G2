@@ -1,0 +1,33 @@
+{
+    "CMPS310": {
+        "course_name": "Software Engineering",
+        "assessments": [
+            {
+                "title": "Homework 1",
+                "type": "Homework",
+                "due_date": "2025-04-05",
+                "effort_hours": 5,
+                "weight": 10
+            },
+            {
+                "title": "Midterm 1",
+                "type": "Midterm",
+                "due_date": "2025-04-15",
+                "effort_hours": 8,
+                "weight": 25
+            }
+        ]
+    },
+    "CMPS320": {
+        "course_name": "Database Systems",
+        "assessments": [
+            {
+                "title": "Project Phase 1",
+                "type": "Project Phase",
+                "due_date": "2025-04-10",
+                "effort_hours": 12,
+                "weight": 20
+            }
+        ]
+    }
+}

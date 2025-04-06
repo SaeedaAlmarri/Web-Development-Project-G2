@@ -19,6 +19,36 @@
             padding: 0;
             background: #f5f7fa;
         }
+        .global-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+
+
+/* Button styles remain the same */
+.global-actions .btn,
+.course-actions .btn {
+    padding: 10px 15px;
+    margin: 2px; /* Small margin to prevent touching on wrap */
+}
+
+/* Color styles remain unchanged */
+.global-actions .get-all-assessments {
+    background: var(--student-color);
+}
+
+.global-actions .view-all-calendar {
+    background: var(--student-color);
+    opacity: 0.9;
+}
+
+.global-actions .workload-report {
+    background: var(--coordinator-color);
+}
         
         header {
             background: #2c3e50;
@@ -129,6 +159,7 @@
     <main class="container">
         <h1>Your Courses</h1>
         <div id="coursesContainer"></div>
+        
     </main>
 
     <script src="main.js"></script>

@@ -1,11 +1,30 @@
 document.addEventListener('DOMContentLoaded', function () {
-    fetch('assessments.json')
-        .then(response => response.json())
-        .then(data => {
-            generateSummaryReport(data);  
-        })
-        .catch(error => console.error("Error loading assessments:", error));
+    loadAndGenerateReport();
 });
+
+function loadAndGenerateReport() {
+    const storedUser = localStorage.getItem('currentUser');
+    const currentUser = storedUser ? JSON.parse(storedUser) : null;
+
+    if (!currentUser || !currentUser.courses) {
+        document.getElementById('report').innerHTML = '<p>No user information or courses found.</p>';
+        return;
+    }
+
+    const storedAssessments = localStorage.getItem('assessmentsData');
+    let assessmentsData = storedAssessments ? JSON.parse(storedAssessments) : {};
+
+    const userCourses = currentUser.courses;
+    const filteredAssessmentsData = {};
+
+    userCourses.forEach(courseCode => {
+        if (assessmentsData[courseCode]) {
+            filteredAssessmentsData[courseCode] = assessmentsData[courseCode];
+        }
+    });
+
+    generateSummaryReport(filteredAssessmentsData);
+}
 
 function generateSummaryReport(data) {
     let reportContainer = document.querySelector('#report');
@@ -29,14 +48,14 @@ function generateSummaryReport(data) {
     let effortHours = [];
 
     Object.keys(data).forEach(course => {
-        let assessments = data[course];
+        const assessmentsForCourse = data[course]?.assessments || [];
 
-        let totalHomeworks = assessments.filter(a => a.type === "Homework").length;
-        let totalQuizzes = assessments.filter(a => a.type === "Quiz").length;
-        let totalProjectPhases = assessments.filter(a => a.type === "Project").length;
-        let totalExams = assessments.filter(a => a.type === "Midterm" || a.type === "Final").length;
-        let totalAssessmentCount = totalHomeworks+totalQuizzes+totalProjectPhases+totalExams;
-        let totalEffortHours = assessments.reduce((sum, a) => sum + a.effortHours, 0);
+        let totalHomeworks = assessmentsForCourse.filter(a => a.type === "Homework").length;
+        let totalQuizzes = assessmentsForCourse.filter(a => a.type === "Quiz").length;
+        let totalProjectPhases = assessmentsForCourse.filter(a => a.type.startsWith("Project Phase")).length;
+        let totalExams = assessmentsForCourse.filter(a => a.type === "Midterm" || a.type === "Final Exam").length;
+        let totalAssessmentCount = totalHomeworks + totalQuizzes + totalProjectPhases + totalExams;
+        let totalEffortHours = assessmentsForCourse.reduce((sum, a) => sum + parseInt(a.effort_hours || 0), 0);
 
         courses.push(course);
         homeworks.push(totalHomeworks);
