@@ -16,6 +16,11 @@
     </header>
     
     <main>
+        <script>document.getElementById('logoutBtn').addEventListener('click', function() {
+            localStorage.removeItem('currentUser');
+            window.location.href = '../htmls/login.html';
+        });
+    </script>
         <h1 id="courseTitle"></h1>
         <form id="commentForm">
             <h3 id="formTitle">New Comment</h3>
@@ -33,6 +38,7 @@
     </main>
 
     <script src="../main.js"></script>
-    <script src="addComments.js"></script>
+    <script src="../javaScripts/addComments.js"></script>
+    <script src="../javaScripts/backButton.js"></script>
 </body>
 </html>

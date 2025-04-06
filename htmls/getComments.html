@@ -16,13 +16,18 @@
     </header>
     
     <main>
+        <script>document.getElementById('logoutBtn').addEventListener('click', function() {
+            localStorage.removeItem('currentUser');
+            window.location.href = '../htmls/login.html';
+        });
+        </script>
         <h1 id="courseTitle"></h1>
         <div id="feedback"></div>
         <div id="commentsContainer"></div>
-        <button onclick="window.location.href='../mainPage.html'">Back to Courses</button>
     </main>
 
     <script src="../main.js"></script>
-    <script src="getComments.js"></script>
+    <script src="../javaScripts/getComments.js"></script>
+    <script src="../javaScripts/backButton.js"></script>
 </body>
 </html>

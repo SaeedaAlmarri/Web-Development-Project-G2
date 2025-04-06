@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', function () {
     const currentUser = getValidUserSession();
 
@@ -43,7 +44,7 @@ function initializeUI(user) {
     allAssessBtn.innerHTML = '<i class="fas fa-file-alt"></i> Get All Assessments';
     allAssessBtn.addEventListener('click', () => {
         localStorage.setItem('viewAllAssessments', 'true');
-        window.location.href = 'Phase1/index.html';
+        window.location.href = 'htmls/assessments.html';
     });
     globalActions.appendChild(allAssessBtn);
     
@@ -53,7 +54,7 @@ function initializeUI(user) {
         allCalendarBtn.innerHTML = '<i class="fas fa-calendar"></i> View All Calendar';
         allCalendarBtn.addEventListener('click', () => {
             localStorage.setItem('viewAllCalendar', 'true');
-            window.location.href = 'task5-6-9/calender.html';
+            window.location.href = 'htmls/calender.html';
         });
         globalActions.appendChild(allCalendarBtn);
     }
@@ -63,7 +64,7 @@ function initializeUI(user) {
         workloadBtn.className = 'btn workload-report';
         workloadBtn.innerHTML = '<i class="fas fa-chart-bar"></i> Workload Reports';
         workloadBtn.addEventListener('click', () => {
-            window.location.href = 'task5-6-9/report.html';
+            window.location.href = 'htmls/report.html';
         });
         globalActions.appendChild(workloadBtn);
     }
@@ -77,7 +78,6 @@ function initializeUI(user) {
         redirectToLogin();
     });
 }
-
 
 function loadCourseData(user) {
     const container = document.getElementById('coursesContainer');
@@ -115,15 +115,13 @@ function generateCourseCardHTML(courseCode, userType) {
         </button>
     `;
 
-    if (userType !== 'course_instructor') {
+    if (userType === 'student') {
         buttons += `
             <button class="btn add-comment" data-course="${courseCode}">
                 <i class="fas fa-plus-circle"></i> Add Comment
             </button>
         `;
     }
-
-  
 
     if (userType === 'course_instructor') {
         buttons += `
@@ -144,19 +142,25 @@ function generateCourseCardHTML(courseCode, userType) {
 function bindCourseActions() {
     const handleAction = (course, action) => {
         localStorage.setItem('currentCourse', course);
+        
+        
+        if (action === 'add-comment') {
+            localStorage.removeItem('replyingToComment');
+        }
+        
         const pages = {
-            'view-assessments': 'task5-6-9/calender.html',
-            'get-assessments': 'Phase1/index.html',
-            'view-comments': 'tasks(comments)/getComments.html',
-            'add-comment': 'tasks(comments)/addComments.html',
-            'add-assessment': 'task1-2/add.html',
-            'workload-report': 'task5-6-9/report.html'
+            'view-assessments': 'htmls/calender.html',
+            'get-assessments': 'htmls/assessments.html',
+            'view-comments': 'htmls/getComments.html',
+            'add-comment': 'htmls/addComments.html',
+            'add-assessment': 'htmls/add.html',
+            'workload-report': 'htmls/report.html'
         };
         window.location.href = pages[action];
     };
 
     document.querySelectorAll('[data-course]').forEach(btn => {
-        btn.addEventListener('click', function () {
+        btn.addEventListener('click', function() {
             const course = this.dataset.course;
             const action =
                 this.classList.contains('view-assessments') ? 'view-assessments' :
@@ -170,9 +174,8 @@ function bindCourseActions() {
         });
     });
 }
-
 function redirectToLogin() {
-    window.location.href = 'task1-2/login.html';
+    window.location.href = 'htmls/login.html';
 }
 
 function formatUserRole(userType) {

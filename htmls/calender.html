@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Assessment Calendar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.8/index.global.min.css">
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        #calendar {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        
+        .container h1 {
+            text-align: center;
+            color: #333;
+        }
+        
+        .container p {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Mizān</div>
+        <div class="user-info">
+            <span id="welcomeMessage"></span>
+            <button id="logoutBtn" class="logout-btn">Logout</button>
+        </div>
+    </header>
+    <script>document.getElementById('logoutBtn').addEventListener('click', function() {
+        localStorage.removeItem('currentUser');
+        window.location.href = '../htmls/login.html';
+    });
+    </script>
+    <div class="container">
+        <h1>Assessment Calendar</h1>
+        <p>View upcoming quizzes, assignments, projects, and exams.</p>
+        <div id="calendar"></div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.8/index.global.min.js"></script>
+    <script src="../javaScripts/script.js"></script>
+    <script src="../javaScripts/backButton.js"></script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles.css">
+    <title>Document</title>
+</head>
+<body>
+    <header>
+        <div class="logo">Mizān</div>
+        <div class="user-info">
+            <span id="welcomeMessage"></span>
+            <button id="logoutBtn" class="logout-btn">Logout</button>
+        </div>
+    </header>
+    <div class="container">
+        <h2>Workload Summary Report</h2>
+        <div id="report"></div>
+        <script>document.getElementById('logoutBtn').addEventListener('click', function() {
+            localStorage.removeItem('currentUser');
+            window.location.href = '../htmls/login.html';
+        });
+        </script>
+        <h3>Workload Distribution</h3>
+        <canvas id="barChart"></canvas>
+        <div class="nav-buttons">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="../javaScripts/reportscript.js"></script>
+        <script src="../javaScripts/backButton.js"></script>
+    </div>
+</body>
+</html>

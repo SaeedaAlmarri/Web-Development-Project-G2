@@ -4,21 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Assessment</title>
-    <link rel="stylesheet" href="add.css">
+    <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
     <div class="container">
         <h1>Add New Assessment</h1>
-        <!-- <nav>
-            <a href="dashboard.html">Back to Dashboard</a>
-        </nav>
-         -->
         <form id="assessmentForm">
             <div class="form-group">
                 <label for="course">Course:</label>
                 <select id="course" name="course" required>
                     <option value="">Select a course</option>
-                    <!-- Will be populated by JavaScript -->
                 </select>
             </div>
             
@@ -65,6 +60,9 @@
         <div id="assessmentsContainer" class="assessments-list"></div>
     </div>
     
-    <script src="add.js"></script>
+    <div class="container">
+        <script src="../javaScripts/backButton.js"></script>
+        <script src="../javaScripts/add.js"></script>
+    </div>
 </body>
 </html>

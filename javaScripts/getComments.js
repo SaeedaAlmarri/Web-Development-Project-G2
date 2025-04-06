@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', async function() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (!currentUser) {
-        window.location.href = '../task1-2/login.html';
+        window.location.href = '../htmls/login.html';
         return;
     }
 
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 async function getCombinedComments(courseCode) {
     const localComments = JSON.parse(localStorage.getItem('courseComments') || '[]');
-    const jsonComments = await fetch('../tasks(comments)/comments.json')
+    const jsonComments = await fetch('../data/comments.json')
         .then(res => res.json())
         .catch(() => []);
     const allComments = [...jsonComments, ...localComments];

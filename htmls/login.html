@@ -4,19 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mizān - Login</title>
-    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="../styles.css">
 </head>
-<body>
+<body class="login-page"> 
     <div class="login-container">
-
         <h1>Welcome to Mizān</h1>
         <form id="loginForm">
             <div class="form-group">
                 <label for="userId">User ID:</label>
-                <input type="text" id="userId" name="userId" required 
-           
+                <input type="text" id="userId" name="userId" required>
             </div>
-      
             <div class="form-group">
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" required>
@@ -27,6 +24,6 @@
         </form>
         <div id="errorMessage" class="error-message"></div>
     </div>
-    <script src="login.js"></script>
+    <script src="../javaScripts/login.js"></script>
 </body>
 </html>
