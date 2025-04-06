@@ -2,7 +2,6 @@ let assessmentsData = {};
 
 document.addEventListener('DOMContentLoaded', async function() {
     try {
-        // Get current user from localStorage
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         if (!currentUser) {
             window.location.href = 'login.html';
@@ -10,7 +9,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
 
         await loadAllAssessments();
-        initAssessmentForm(currentUser); // Pass currentUser to init
+        initAssessmentForm(currentUser); 
 
         document.getElementById('course').addEventListener('change', function() {
             if (this.value) {
@@ -28,7 +27,6 @@ async function loadAllAssessments() {
     try {
         const response = await fetch('assessments.json');
         assessmentsData = await response.json();
-        // Store initial data in localStorage
         localStorage.setItem('assessmentsData', JSON.stringify(assessmentsData));
     } catch (error) {
         console.error('Error loading assessments:', error);
@@ -36,11 +34,9 @@ async function loadAllAssessments() {
     }
 }
 
-// CHANGED: Now accepts currentUser parameter
 function initAssessmentForm(currentUser) {
     const form = document.getElementById('assessmentForm');
 
-    // CHANGED: Only populate courses for this user
     populateCourseDropdown(currentUser.courses);
 
     document.getElementById('assessmentType').addEventListener('change', updateDefaultTitle);
@@ -51,15 +47,12 @@ function initAssessmentForm(currentUser) {
     });
 }
 
-// CHANGED: Now filters by user's courses
 function populateCourseDropdown(userCourses) {
     const courseSelect = document.getElementById('course');
     courseSelect.innerHTML = '<option value="">Select a course</option>';
 
-    // Get the latest assessments data from localStorage
     const storedAssessmentsData = JSON.parse(localStorage.getItem('assessmentsData')) || {};
 
-    // Only show courses that exist in both storedAssessmentsData AND user's courses
     userCourses.forEach(courseCode => {
         if (storedAssessmentsData[courseCode]) {
             const option = document.createElement('option');
@@ -69,7 +62,6 @@ function populateCourseDropdown(userCourses) {
         }
     });
 
-    // If no valid courses found, disable the dropdown
     if (courseSelect.options.length === 1) {
         courseSelect.disabled = true;
         showFeedback('No courses available to add assessments', 'error');
@@ -82,7 +74,6 @@ function updateDefaultTitle() {
     const courseSelect = document.getElementById('course').value;
 
     if (type && !titleInput.value && courseSelect) {
-        // Get the latest assessments data from localStorage
         const storedAssessmentsData = JSON.parse(localStorage.getItem('assessmentsData')) || {};
         const existingAssessments = storedAssessmentsData[courseSelect]?.assessments || [];
         const similarAssessments = existingAssessments.filter(a => a.type === type);
@@ -116,7 +107,6 @@ async function handleFormSubmission(form) {
             weight: parseInt(data.weight)
         };
 
-        // Get the latest assessments data from localStorage
         const storedAssessmentsData = JSON.parse(localStorage.getItem('assessmentsData')) || {};
 
         if (!storedAssessmentsData[data.course]) {
@@ -129,7 +119,6 @@ async function handleFormSubmission(form) {
 
         storedAssessmentsData[data.course].assessments.push(newAssessment);
 
-        // Update localStorage with the new data
         localStorage.setItem('assessmentsData', JSON.stringify(storedAssessmentsData));
         assessmentsData = storedAssessmentsData; // Update in-memory data as well
 
@@ -170,7 +159,6 @@ function validateAssessment(data) {
         return false;
     }
 
-    // Get the latest assessments data from localStorage
     const storedAssessmentsData = JSON.parse(localStorage.getItem('assessmentsData')) || {};
     const courseAssessments = storedAssessmentsData[data.course]?.assessments || [];
 
@@ -219,7 +207,6 @@ function displayCourseAssessments(courseCode) {
     const container = document.getElementById('assessmentsContainer');
     container.innerHTML = '';
 
-    // Get the latest assessments data from localStorage
     const storedAssessmentsData = JSON.parse(localStorage.getItem('assessmentsData')) || {};
 
     if (!storedAssessmentsData[courseCode] || storedAssessmentsData[courseCode].assessments.length === 0) {
