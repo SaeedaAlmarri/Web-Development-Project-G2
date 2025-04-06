@@ -1,6 +1,6 @@
 function addBackButton() {
 
-    if (window.location.pathname.includes('mainPage.html') || 
+    if (window.location.pathname.includes('index.html') || 
         window.location.pathname.includes('login.html')) {
         return;
     }
@@ -9,7 +9,7 @@ function addBackButton() {
     container.className = 'back-button-container';
     
     const button = document.createElement('a');
-    button.href = '../mainPage.html';
+    button.href = '../index.html';
     button.className = 'back-button';
     button.innerHTML = '<i class="fas fa-arrow-left"></i> Back to Courses';
     

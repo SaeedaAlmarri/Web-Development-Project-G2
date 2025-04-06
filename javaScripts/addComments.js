@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const allowedRoles = ['student', 'course_instructor', 'coordinator'];
     if (!allowedRoles.includes(currentUser.userType)) {
-        window.location.href = '../mainPage.html';
+        window.location.href = '../index.html';
         return;
     }
     
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                      currentUser.userType === 'course_instructor' ? 'Announcement posted!' : 
                                      'Comment added successfully!';
             alert(successMessage);        
-            window.location.href = '../mainPage.html';
+            window.location.href = '../index.html';
         } catch (error) {
             alert('Error: ' + error.message);
         }

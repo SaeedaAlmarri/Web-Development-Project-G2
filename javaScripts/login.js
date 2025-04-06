@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const currentUser = getCurrentUser();
     if (currentUser && !isSessionExpired(currentUser)) {
-        window.location.href = '../mainPage.html';
+        window.location.href = '../index.html';
         return;
     } else if (currentUser) {
         localStorage.removeItem('currentUser');
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 };
                 localStorage.setItem('currentUser', JSON.stringify(userData));
                 
-                window.location.href = '../mainPage.html?fresh=' + Date.now();
+                window.location.href = '../index.html?fresh=' + Date.now();
             } else {
                 showError('Invalid User ID or password');
             }
